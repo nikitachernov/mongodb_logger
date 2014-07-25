@@ -105,7 +105,7 @@ module MongodbLogger
         ssl: false
       }.with_indifferent_access
 
-      resolve_config.tap do |c|
+      resolve_config.with_indifferent_access.tap do |c|
         @db_configuration.merge!(c[:sessions][:default])
         @db_configuration.merge!(c[:options])
       end
