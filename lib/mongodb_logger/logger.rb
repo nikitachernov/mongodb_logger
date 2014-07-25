@@ -101,10 +101,15 @@ module MongodbLogger
 
     def configure
       @db_configuration = {
-        host: 'localhost',
-        port: 27017,
         capsize: DEFAULT_COLLECTION_SIZE,
-        ssl: false}.merge(resolve_config).with_indifferent_access
+        ssl: false
+      }.with_indifferent_access
+
+      resolve_config.tap do |c|
+        @db_configuration.merge!(c[:sessions][:default])
+        @db_configuration.merge!(c[:options])
+      end
+
       @db_configuration[:collection] ||= "#{app_env}_log"
       @db_configuration[:application_name] ||= resolve_application_name
       @db_configuration[:write_options] ||= { w: 0, wtimeout: 200 }
